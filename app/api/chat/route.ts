@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GEMINI_API_KEY = "AIzaSyAwgxJlsQerCMeyaM1d3-ffDCXk8GqBUxE";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+  throw new Error("Missing environment variable GEMINI_API_KEY. Set it in .env.local or your deployment environment.");
+}
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
 
 const SYSTEM_PROMPT = `You are Sigma, the intelligent AI assistant for Sigmatronics Innovation Private Limited.

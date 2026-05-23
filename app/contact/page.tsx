@@ -14,6 +14,7 @@ import {
   MapPin, 
   Clock, 
   Mail, 
+  Phone,
   BookOpen 
 } from "lucide-react";
 
@@ -28,6 +29,56 @@ const contactReasons = [
 
 export default function ContactPage() {
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    inquiryType: '',
+    projectDetails: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setSubmitMessage(null);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitMessage({
+          type: 'success',
+          text: 'Thank you! Your message has been sent successfully. We\'ll get back to you within 24 hours.',
+        });
+        setFormData({ name: '', email: '', phone: '', inquiryType: '', projectDetails: '' });
+        setSelectedReason(null);
+      } else {
+        const error = await response.json();
+        setSubmitMessage({
+          type: 'error',
+          text: error.error || 'Failed to send message. Please try again.',
+        });
+      }
+    } catch (error) {
+      setSubmitMessage({
+        type: 'error',
+        text: 'An error occurred. Please try again later.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="relative overflow-hidden bg-[#fffcf9] text-slate-900">
@@ -95,13 +146,17 @@ export default function ContactPage() {
                   </div>
                 </div>
                 
-                <form className="mt-8 space-y-4" onSubmit={(e) => e.preventDefault()}>
+                <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Full Name *</label>
                       <input 
                         type="text" 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
                         placeholder="Your name" 
+                        required
                         className="w-full rounded-2xl border border-slate-200 bg-white/50 px-5 py-3 text-sm text-slate-900 outline-none transition-all duration-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 hover:border-orange-200" 
                       />
                     </div>
@@ -109,7 +164,11 @@ export default function ContactPage() {
                       <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email Address *</label>
                       <input 
                         type="email" 
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         placeholder="you@company.com" 
+                        required
                         className="w-full rounded-2xl border border-slate-200 bg-white/50 px-5 py-3 text-sm text-slate-900 outline-none transition-all duration-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 hover:border-orange-200" 
                       />
                     </div>
@@ -120,6 +179,9 @@ export default function ContactPage() {
                       <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Phone Number</label>
                       <input 
                         type="tel" 
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         placeholder="+91 XXXXX XXXXX" 
                         className="w-full rounded-2xl border border-slate-200 bg-white/50 px-5 py-3 text-sm text-slate-900 outline-none transition-all duration-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 hover:border-orange-200" 
                       />
@@ -128,8 +190,9 @@ export default function ContactPage() {
                       <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Inquiry Type</label>
                       <div className="relative">
                         <select 
-                          value={selectedReason || ""}
-                          onChange={(e) => setSelectedReason(e.target.value)}
+                          name="inquiryType"
+                          value={formData.inquiryType}
+                          onChange={handleInputChange}
                           className="w-full appearance-none rounded-2xl border border-slate-200 bg-white/50 px-5 py-3 text-sm text-slate-900 outline-none transition-all duration-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 hover:border-orange-200"
                         >
                           <option value="">Select an area...</option>
@@ -147,26 +210,51 @@ export default function ContactPage() {
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Project Details *</label>
                     <textarea 
+                      name="projectDetails"
+                      value={formData.projectDetails}
+                      onChange={handleInputChange}
                       rows={4} 
                       placeholder="Tell us about your requirements, timeline, and goals..." 
+                      required
                       className="w-full resize-none rounded-2xl border border-slate-200 bg-white/50 px-5 py-3 text-sm text-slate-900 outline-none transition-all duration-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/10 hover:border-orange-200" 
                     />
                   </div>
+
+                  {submitMessage && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-2xl text-sm font-semibold ${
+                        submitMessage.type === 'success'
+                          ? 'bg-green-50 border border-green-200 text-green-700'
+                          : 'bg-red-50 border border-red-200 text-red-700'
+                      }`}
+                    >
+                      {submitMessage.text}
+                    </motion.div>
+                  )}
 
                   <motion.button 
                     whileHover={{ scale: 1.01, boxShadow: "0 20px 40px -15px rgba(249,115,22,0.3)" }}
                     whileTap={{ scale: 0.98 }}
                     type="submit" 
-                    className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl bg-orange-600 px-8 py-4 text-sm font-bold text-white transition-all duration-300 hover:bg-orange-700 shadow-lg shadow-orange-500/20"
+                    disabled={isLoading}
+                    className={`group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl px-8 py-4 text-sm font-bold text-white transition-all duration-300 shadow-lg shadow-orange-500/20 ${
+                      isLoading
+                        ? 'bg-slate-400 cursor-not-allowed'
+                        : 'bg-orange-600 hover:bg-orange-700'
+                    }`}
                   >
-                    <span className="relative z-10">Send My Message</span>
-                    <motion.span 
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="relative z-10"
-                    >
-                      →
-                    </motion.span>
+                    <span className="relative z-10">{isLoading ? 'Sending...' : 'Send My Message'}</span>
+                    {!isLoading && (
+                      <motion.span 
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="relative z-10"
+                      >
+                        →
+                      </motion.span>
+                    )}
                     <div className="absolute inset-0 z-0 bg-gradient-to-r from-orange-500 via-blue-600 to-orange-500 bg-[length:200%_100%] opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:animate-gradient-x" />
                   </motion.button>
                   
@@ -194,8 +282,15 @@ export default function ContactPage() {
                 <div className="flex items-start gap-4 text-orange-600">
                   <MapPin size={24} strokeWidth={2} />
                   <div>
-                    <p className="font-semibold text-slate-900">Registered Office</p>
-                    <p className="text-sm text-slate-500">Pune, Maharashtra, India</p>
+                    <p className="font-semibold text-slate-900">Office Address</p>
+                    <p className="text-sm text-slate-500">121, Welcome Society, Behind Shriram Heights, Katol Road, Nagpur, Maharashtra - 440013</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 text-orange-600">
+                  <Phone size={24} strokeWidth={2} />
+                  <div>
+                    <p className="font-semibold text-slate-900">Phone</p>
+                    <p className="text-sm text-slate-500">+91 98904 55177</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 text-orange-600">
@@ -208,8 +303,8 @@ export default function ContactPage() {
                 <div className="flex items-start gap-4 text-orange-600">
                   <Mail size={24} strokeWidth={2} />
                   <div>
-                    <p className="font-semibold text-slate-900">General Inquiries</p>
-                    <p className="text-sm text-slate-500">hello@sigmatronics.ai</p>
+                    <p className="font-semibold text-slate-900">Email</p>
+                    <p className="text-sm text-slate-500">info@sigmatronics.co.in</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 text-orange-600">
@@ -223,7 +318,7 @@ export default function ContactPage() {
             </div>
             <div className="overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d242117.68078384278!2d73.72286709453123!3d18.524600699999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67461101%3A0x828d43bf9d9ee343!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.4328906389563!2d79.02776832346935!3d21.180103817045097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4c1eb066e79b5%3A0x8ddbfac17493bf97!2sSigmatronics%20Innovation%20Pvt%20Ltd!5e0!3m2!1sen!2sin!4v1685612345678"
                 width="100%"
                 height="320"
                 style={{ border: 0 }}
@@ -240,12 +335,12 @@ export default function ContactPage() {
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mt-16 overflow-hidden rounded-[40px] bg-gradient-to-r from-orange-600 to-blue-700 p-12 text-center text-white shadow-2xl shadow-orange-500/20 lg:p-16">
           <p className="text-xs font-bold uppercase tracking-widest text-orange-200">Prefer a Quick Chat?</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-extrabold leading-snug">We're Just an Email Away — Let's Get Started.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-orange-100">No forms needed — just drop us an email at hello@sigmatronics.ai and our team will respond within 24 hours.</p>
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-orange-100">No forms needed — just drop us an email at info@sigmatronics.co.in and our team will respond within 24 hours.</p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a href="mailto:hello@sigmatronics.ai" className="rounded-full bg-white px-10 py-4 text-sm font-bold text-orange-700 shadow-xl transition hover:bg-orange-50">
+            <a href="mailto:info@sigmatronics.co.in" className="rounded-full bg-white px-10 py-4 text-sm font-bold text-orange-700 shadow-xl transition hover:bg-orange-50">
               Email Us Directly →
             </a>
-            <a href="tel:+91XXXXXXXXXX" className="rounded-full border-2 border-white/30 px-10 py-4 text-sm font-bold text-white transition hover:bg-white/10">
+            <a href="tel:+919890455177" className="rounded-full border-2 border-white/30 px-10 py-4 text-sm font-bold text-white transition hover:bg-white/10">
               Call Us Now
             </a>
           </div>

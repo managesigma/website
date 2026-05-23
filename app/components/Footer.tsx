@@ -76,6 +76,8 @@ const navCols = [
       { label: "Contact",        href: "/contact" },
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Use",   href: "/terms" },
+      { label: "Disclaimer",     href: "/disclaimer" },
+      { label: "Refund Policy",  href: "/refund" },
     ],
   },
 ];
@@ -87,9 +89,9 @@ const socials = [
 ];
 
 const contactItems = [
-  { Icon: PinIcon,   text: "Maharashtra, India" },
-  { Icon: MailIcon,  text: "contact@sigmatronics.in" },
-  { Icon: PhoneIcon, text: "+91 98765 43210" },
+  { Icon: PinIcon,   text: "121, Welcome Society, Behind Shriram Heights, Katol Road, Nagpur, Maharashtra - 440013" },
+  { Icon: MailIcon,  text: "info@sigmatronics.co.in" },
+  { Icon: PhoneIcon, text: "+91 98904 55177" },
 ];
 
 /* ─── Footer ─────────────────────────────────────────── */
@@ -215,12 +217,16 @@ export default function SiteFooter() {
           </div>
         </motion.div>
 
+        <div className="mt-10 rounded-3xl border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600 shadow-sm">
+          Sigmatronics Innovation Private Limited is a technology company specializing in hardware development, IoT systems, automation solutions, embedded electronics, industrial software, cloud platforms, smart monitoring systems, consultancy, and innovation-driven technology solutions.
+        </div>
+
         {/* ── Outer Bottom Bar ── */}
         <div className="mt-14 flex flex-col items-center justify-between gap-8 text-[14px] text-slate-500 sm:flex-row px-8">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-10">
             <p className="font-bold">© {new Date().getFullYear()} <span className="text-sky-600">Sigmatronics</span> Innovation</p>
-            <div className="flex items-center gap-8 font-black uppercase tracking-widest text-[11px]">
-              {["Privacy", "Terms"].map(item => (
+            <div className="flex flex-wrap items-center gap-4 font-black uppercase tracking-widest text-[11px]">
+              {["Privacy", "Terms", "Disclaimer", "Refund"].map(item => (
                 <Link key={item}
                   href={`/${item.toLowerCase()}`}
                   className="hover:text-orange-500 transition-colors">

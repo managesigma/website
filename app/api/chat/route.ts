@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-  throw new Error("Missing environment variable GEMINI_API_KEY. Set it in .env.local or your deployment environment.");
-}
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL_BASE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
 
 const SYSTEM_PROMPT = `You are Sigma, the intelligent AI assistant for Sigmatronics Innovation Private Limited.
 You help visitors learn about the company, its products, services, and capabilities.
@@ -78,6 +74,15 @@ Website: sigmatronics.ai`;
 
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("Missing environment variable GEMINI_API_KEY");
+      return NextResponse.json(
+        { error: "Chat service is not configured" },
+        { status: 503 }
+      );
+    }
+
     const body = await req.json();
     const { messages } = body as {
       messages: Array<{ role: "user" | "model"; text: string }>;
@@ -109,7 +114,7 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    const response = await fetch(GEMINI_URL, {
+    const response = await fetch(`${GEMINI_URL_BASE}?key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(geminiBody),

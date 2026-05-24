@@ -1,3 +1,5 @@
+import BackToHome from "../components/BackToHome";
+
 export const metadata = {
   title: 'Terms & Conditions | Sigmatronics Innovation',
   description: 'Review the Terms & Conditions for using Sigmatronics Innovation Private Limited website, products, and services.',
@@ -5,7 +7,9 @@ export const metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
+    <div>
+      <BackToHome />
+      <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
       <section className="space-y-6 rounded-4xl border border-slate-200 bg-white p-10 shadow-lg">
         <div className="space-y-3">
           <p className="text-sm uppercase tracking-[0.24em] text-orange-600">Terms & Conditions</p>
@@ -86,6 +90,7 @@ export default function TermsPage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }

@@ -17,12 +17,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sigmatronics | Global Technology & Innovation",
+  title: "Sigmatronics Innovation | Global Technology & Innovation",
   description:
     "Sigmatronics is a global technology company delivering hardware, software, solutions, and consultancy for enterprise digital transformation.",
   metadataBase: new URL("https://sigmatronics.ai"),
   verification: {
     google: "google0c8b9210f796a8b8",
+  },
+  icons: {
+    icon: "/faviconlogo.jpeg",
+    shortcut: "/faviconlogo.jpeg",
+    apple: "/faviconlogo.jpeg",
   },
 };
 

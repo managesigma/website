@@ -1,3 +1,5 @@
+import BackToHome from "../components/BackToHome";
+
 export const metadata = {
   title: 'Privacy Policy | Sigmatronics Innovation',
   description: 'Read the privacy policy for Sigmatronics Innovation Private Limited and learn how your information is collected, used, and protected.',
@@ -5,7 +7,9 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
+    <div>
+      <BackToHome />
+      <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
       <section className="space-y-6 rounded-4xl border border-slate-200 bg-white p-10 shadow-lg">
         <div className="space-y-3">
           <p className="text-sm uppercase tracking-[0.24em] text-cyan-600">Privacy Policy</p>
@@ -97,6 +101,7 @@ export default function PrivacyPage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }

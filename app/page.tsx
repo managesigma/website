@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Cpu, 
@@ -13,7 +13,11 @@ import {
   Settings, 
   Cloud, 
   Zap,
-  ArrowRight
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 const navItems = [
@@ -102,7 +106,58 @@ const heroImages = [
 ];
 
 export default function Home() {
-  const [expandedVertical, setExpandedVertical] = useState<string | null>(null);
+  // Focused carousel state
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<"left" | "right" | "up" | "down">("right");
+  const total = verticals.length;
+
+  // Touch/swipe tracking
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+
+  const goPrev = useCallback(() => {
+    setDirection("left");
+    setActiveIndex((i) => (i - 1 + total) % total);
+  }, [total]);
+
+  const goNext = useCallback(() => {
+    setDirection("right");
+    setActiveIndex((i) => (i + 1) % total);
+  }, [total]);
+
+  const goPrevMobile = useCallback(() => {
+    setDirection("up");
+    setActiveIndex((i) => (i - 1 + total) % total);
+  }, [total]);
+
+  const goNextMobile = useCallback(() => {
+    setDirection("down");
+    setActiveIndex((i) => (i + 1) % total);
+  }, [total]);
+
+  const handleDesktopTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleDesktopTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goNext();
+      else goPrev();
+    }
+  };
+
+  const handleMobileTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleMobileTouchEnd = (e: React.TouchEvent) => {
+    const diff = touchStartY.current - e.changedTouches[0].clientY;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) goNextMobile();
+      else goPrevMobile();
+    }
+  };
 
   return (
     <div className="relative overflow-hidden bg-white text-slate-900">
@@ -224,16 +279,18 @@ export default function Home() {
                       Trusted by innovators, enterprises, institutions, and growing businesses for end-to-end technology execution — from device engineering to cloud platforms.
                     </p>
                   </div>
-                  <div className="grid gap-2">
+                  <div className="space-y-3 pl-1">
                     {[
                       { label: "Device Engineering", icon: Cpu },
                       { label: "Cloud Platforms", icon: Cloud },
                       { label: "Automation", icon: Settings },
                     ].map((item) => (
-                      <span key={item.label} className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700">
-                        <item.icon size={14} className="text-cyan-600" />
+                      <div key={item.label} className="flex items-center gap-3 text-sm font-semibold text-slate-800">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100">
+                          <item.icon size={12} strokeWidth={2.5} />
+                        </span>
                         {item.label}
-                      </span>
+                      </div>
                     ))}
                   </div>
                   <Link
@@ -245,6 +302,238 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </section>
+
+        {/* Our Technology Verticals Section */}
+        <section className="mt-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-12"
+          >
+            <p className="inline-flex rounded-full bg-cyan-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-700">Our Verticals</p>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Technology Verticals</h2>
+            <p className="mx-auto mt-4 max-w-xl text-slate-600">
+              A high-impact ecosystem of specialized engineering and digital domains.
+            </p>
+          </motion.div>
+
+          {/* DESKTOP VIEW: Focused Single-Card Carousel */}
+          <div
+            className="hidden md:block relative select-none"
+            onTouchStart={handleDesktopTouchStart}
+            onTouchEnd={handleDesktopTouchEnd}
+          >
+            {/* Prev Button */}
+            <button
+              onClick={goPrev}
+              className="absolute left-4 top-1/2 z-30 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-white border border-slate-200 shadow-xl text-slate-700 hover:bg-cyan-50 hover:border-cyan-300 hover:text-cyan-700 transition-all duration-200 active:scale-90 focus:outline-none cursor-pointer"
+              aria-label="Previous"
+            >
+              <ChevronLeft size={26} strokeWidth={2.5} />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={goNext}
+              className="absolute right-4 top-1/2 z-30 -translate-y-1/2 flex h-14 w-14 items-center justify-center rounded-full bg-white border border-slate-200 shadow-xl text-slate-700 hover:bg-cyan-50 hover:border-cyan-300 hover:text-cyan-700 transition-all duration-200 active:scale-90 focus:outline-none cursor-pointer"
+              aria-label="Next"
+            >
+              <ChevronRight size={26} strokeWidth={2.5} />
+            </button>
+
+            {/* Cards Stage */}
+            <div className="flex items-center justify-center gap-6 py-8 px-24 overflow-hidden min-h-[380px]">
+              {verticals.map((vertical, index) => {
+                const offset = ((index - activeIndex + total) % total);
+                const normalizedOffset = offset > total / 2 ? offset - total : offset;
+                // Only render cards that are close to center
+                if (Math.abs(normalizedOffset) > 2) return null;
+                const isActive = normalizedOffset === 0;
+                const isAdjacent = Math.abs(normalizedOffset) === 1;
+                const translateX = normalizedOffset * 310;
+                const scale = isActive ? 1 : isAdjacent ? 0.82 : 0.68;
+                const opacity = isActive ? 1 : isAdjacent ? 0.55 : 0.25;
+                const zIndex = isActive ? 20 : isAdjacent ? 10 : 5;
+                return (
+                  <motion.div
+                    key={vertical.title}
+                    animate={{
+                      x: translateX,
+                      scale,
+                      opacity,
+                      zIndex,
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className={`absolute w-[340px] overflow-hidden rounded-3xl border cursor-pointer transition-shadow duration-300 bg-white ${
+                      isActive
+                        ? "border-cyan-400 shadow-2xl shadow-cyan-200/60 ring-2 ring-cyan-400/40"
+                        : "border-slate-200 shadow-md"
+                    }`}
+                    onClick={() => {
+                      if (!isActive) {
+                        if (normalizedOffset > 0) goNext();
+                        else goPrev();
+                      }
+                    }}
+                  >
+                    <div className="relative h-44 overflow-hidden">
+                      <Image
+                        src={vertical.image}
+                        alt={vertical.fullName}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent" />
+                      <div className="absolute top-4 left-4">
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${vertical.color} text-white shadow-lg`}>
+                          <vertical.icon size={20} />
+                        </div>
+                      </div>
+                      {isActive && (
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-300">{vertical.subtitle}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-slate-900">{vertical.fullName}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-slate-500 line-clamp-3">{vertical.description}</p>
+                      {isActive && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.15 }}
+                          className="mt-4 pt-4 border-t border-slate-100"
+                        >
+                          <p className="text-xs leading-relaxed text-slate-400 line-clamp-3">{vertical.longDescription}</p>
+                          <Link
+                            href={vertical.href}
+                            className="mt-4 inline-flex items-center gap-2 rounded-full bg-cyan-700 px-5 py-2 text-xs font-bold text-white hover:bg-cyan-800 transition-colors"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Explore <ChevronRight size={14} />
+                          </Link>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Dot Indicators */}
+            <div className="flex justify-center gap-2 mt-4 pb-2">
+              {verticals.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setDirection(i > activeIndex ? "right" : "left"); setActiveIndex(i); }}
+                  className={`h-2 rounded-full transition-all duration-300 focus:outline-none ${
+                    i === activeIndex ? "w-8 bg-cyan-600" : "w-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* MOBILE VIEW: Vertical Swipe Carousel */}
+          <div
+            className="md:hidden relative flex flex-col items-center px-6"
+            onTouchStart={handleMobileTouchStart}
+            onTouchEnd={handleMobileTouchEnd}
+          >
+            {/* Up Button */}
+            <button
+              onClick={goPrevMobile}
+              className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white border border-slate-200 shadow-lg text-slate-700 hover:bg-cyan-50 hover:border-cyan-300 hover:text-cyan-700 transition-all duration-200 active:scale-90 focus:outline-none cursor-pointer"
+              aria-label="Previous"
+            >
+              <ChevronUp size={22} strokeWidth={2.5} />
+            </button>
+
+            {/* Card Viewport */}
+            <div className="relative w-full max-w-sm overflow-hidden" style={{ height: 420 }}>
+              {(() => {
+                const activeVertical = verticals[activeIndex];
+                const ActiveIcon = activeVertical.icon;
+                return (
+              <AnimatePresence mode="wait" initial={false} custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  custom={direction}
+                  variants={{
+                    enter: (d: string) => ({ y: d === "down" ? 120 : -120, opacity: 0, scale: 0.92 }),
+                    center: { y: 0, opacity: 1, scale: 1 },
+                    exit: (d: string) => ({ y: d === "down" ? -120 : 120, opacity: 0, scale: 0.92 }),
+                  }}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ type: "spring", stiffness: 280, damping: 28 }}
+                  className="absolute inset-0 w-full overflow-hidden rounded-3xl border border-cyan-300 bg-white shadow-2xl shadow-cyan-100/60 ring-2 ring-cyan-400/30"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={activeVertical.image}
+                      alt={activeVertical.fullName}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                        <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${activeVertical.color} text-white shadow-lg`}>
+                          <ActiveIcon size={22} />
+                        </div>
+                      </div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-cyan-300">{activeVertical.subtitle}</p>
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold text-slate-900">{activeVertical.fullName}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-500 line-clamp-3">{activeVertical.description}</p>
+                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+                      <p className="text-xs text-slate-400 font-medium">{activeIndex + 1} / {total}</p>
+                      <Link
+                        href={activeVertical.href}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-cyan-700 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-800 transition-colors"
+                      >
+                        Explore <ChevronRight size={12} />
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+                );
+              })()}
+            </div>
+
+            {/* Down Button */}
+            <button
+              onClick={goNextMobile}
+              className="mt-4 flex h-12 w-12 items-center justify-center rounded-full bg-white border border-slate-200 shadow-lg text-slate-700 hover:bg-cyan-50 hover:border-cyan-300 hover:text-cyan-700 transition-all duration-200 active:scale-90 focus:outline-none cursor-pointer"
+              aria-label="Next"
+            >
+              <ChevronDown size={22} strokeWidth={2.5} />
+            </button>
+
+            {/* Dot Indicators */}
+            <div className="flex gap-2 mt-4">
+              {verticals.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setDirection(i > activeIndex ? "down" : "up"); setActiveIndex(i); }}
+                  className={`w-2 rounded-full transition-all duration-300 focus:outline-none ${
+                    i === activeIndex ? "h-8 bg-cyan-600" : "h-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -275,7 +564,7 @@ export default function Home() {
               </div>
               <div className="rounded-3xl border border-slate-100 bg-slate-50 p-8 shadow-inner lg:p-10">
                 <p className="text-lg leading-relaxed text-slate-600 italic">
-                  "Our mission is to help businesses, institutions, governments, and innovators adopt practical, scalable, and future-ready technology that solves real-world problems."
+                  &quot;Our mission is to help businesses, institutions, governments, and innovators adopt practical, scalable, and future-ready technology that solves real-world problems.&quot;
                 </p>
                 <div className="mt-8 flex gap-4">
                   <div className="h-12 w-12 rounded-full bg-cyan-600 shadow-lg shadow-cyan-200" />
@@ -289,120 +578,6 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* Our Technology Verticals Section - Auto-Scrolling Ticker */}
-        <section className="mt-32 overflow-hidden py-10 bg-slate-50/50">
-          <div className="text-center px-4 mb-16">
-            <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Technology Verticals</h2>
-            <p className="mx-auto mt-4 max-w-xl text-slate-600">
-              A high-impact ecosystem of specialized engineering and digital domains.
-            </p>
-          </div>
-
-          <div className="relative flex overflow-hidden pause-on-hover">
-            {/* Ticker Container */}
-            <div
-              className="flex gap-6 whitespace-nowrap py-4 px-3 animate-marquee"
-              style={{ width: "max-content" }}
-            >
-              {/* Duplicate cards for infinite loop */}
-              {[...verticals, ...verticals, ...verticals].map((vertical, index) => (
-                <div
-                  key={`${vertical.title}-${index}`}
-                  onClick={() => setExpandedVertical(expandedVertical === vertical.title ? null : vertical.title)}
-                  className={`relative w-[260px] flex-shrink-0 cursor-pointer overflow-hidden rounded-2xl border transition-all duration-500 ${
-                    expandedVertical === vertical.title 
-                    ? 'ring-2 ring-cyan-500 border-cyan-500 shadow-2xl scale-105 bg-white z-20' 
-                    : 'border-slate-200 bg-white shadow-sm hover:border-cyan-300 hover:shadow-md'
-                  }`}
-                >
-                  <div className="relative h-32 overflow-hidden">
-                    <Image
-                      src={vertical.image}
-                      alt={vertical.fullName}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-slate-900/40" />
-                    <div className="absolute top-3 left-4">
-                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${vertical.color} text-white shadow-md`}>
-                        <vertical.icon size={16} />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-slate-900">{vertical.fullName}</h3>
-                    <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-cyan-600 truncate">{vertical.subtitle}</p>
-                    <p className="mt-2 text-xs leading-relaxed text-slate-500 whitespace-normal line-clamp-2">
-                      {vertical.description}
-                    </p>
-                    
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-50 pt-3">
-                      <span className="text-[10px] font-bold text-slate-400">Click to expand</span>
-                      <Link
-                        href={vertical.href}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-[10px] font-bold text-cyan-600 hover:underline"
-                      >
-                        Visit Page →
-                      </Link>
-                    </div>
-
-                    <AnimatePresence>
-                      {expandedVertical === vertical.title && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="mt-3 border-t border-slate-100 pt-3">
-                            <p className="text-[11px] leading-relaxed text-slate-600 whitespace-normal">
-                              {vertical.longDescription}
-                            </p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Gradient Overlays for smooth edges */}
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-          </div>
-        </section>
-
-
-
-        <section className="mt-20 rounded-4xl border border-slate-200 bg-slate-50 p-8 shadow-sm">
-          <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
-            <div>
-              <p className="text-sm uppercase tracking-[0.32em] text-cyan-700">Focused pages</p>
-              <h2 className="mt-3 text-3xl font-semibold text-slate-900">Everything lives in the right place.</h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">
-                Home is simple and bold, with product and company details moved to dedicated pages so the site feels modern and easy to explore.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <Link
-                href="/about"
-                className="inline-flex items-center justify-center rounded-full bg-cyan-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:bg-cyan-800 interactive-hover"
-              >
-                About Sigmatronics
-              </Link>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 interactive-hover"
-              >
-                Products & Platforms
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
     </div>
   );

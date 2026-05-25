@@ -1,3 +1,5 @@
+import BackToHome from "../components/BackToHome";
+
 export const metadata = {
   title: 'Disclaimer | Sigmatronics Innovation',
   description: 'Read the disclaimer for Sigmatronics Innovation Private Limited including limitations of liability and advisory statements.',
@@ -5,7 +7,9 @@ export const metadata = {
 
 export default function DisclaimerPage() {
   return (
-    <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
+    <div>
+      <BackToHome />
+      <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
       <section className="space-y-6 rounded-4xl border border-slate-200 bg-white p-10 shadow-lg">
         <div className="space-y-3">
           <p className="text-sm uppercase tracking-[0.24em] text-amber-600">Disclaimer</p>
@@ -45,6 +49,7 @@ export default function DisclaimerPage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }

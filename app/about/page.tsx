@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import BackToHome from "../components/BackToHome";
 import { 
   Lightbulb, 
   Settings, 
@@ -56,6 +57,8 @@ export default function AboutPage() {
         <motion.div animate={{ scale: [1.2, 1, 1.2], x: [0, -60, 0] }} transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-32 top-48 h-[700px] w-[700px] rounded-full bg-orange-400/10 blur-[140px]" />
       </div>
 
+      <BackToHome />
+
       <main className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
 
         {/* HERO */}
@@ -88,8 +91,8 @@ export default function AboutPage() {
               <div className="overflow-hidden rounded-3xl shadow-2xl">
                 <Image src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80" alt="Sigmatronics Innovation team" width={900} height={500} className="h-64 w-full object-cover transition-transform duration-700 hover:scale-105" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {[{ v: "5+", l: "Technology Verticals" }, { v: "9+", l: "Hardware Domains" }, { v: "5+", l: "Flagship Platforms" }, { v: "Full-Stack", l: "Innovation Capability" }].map(s => (
+              <div className="grid grid-cols-3 gap-4">
+                {[{ v: "5+", l: "Technology Verticals" }, { v: "9+", l: "Hardware Domains" }, { v: "5+", l: "Flagship Platforms" }].map(s => (
                   <div key={s.l} className="rounded-2xl border border-cyan-100 bg-white p-5 text-center shadow-sm">
                     <p className="text-2xl font-black text-slate-900">{s.v}</p>
                     <p className="mt-1 text-xs font-medium text-slate-500">{s.l}</p>
@@ -121,7 +124,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/10">
-              <Image src="https://images.unsplash.com/photo-1581091870622-2d5e8de5d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Technology innovation" width={800} height={500} className="h-80 w-full object-cover" />
+              <Image src="/sidharthmishra.jpeg" alt="Sidharth Mishra - Sigmatronics Innovation" width={800} height={500} className="h-80 w-full object-cover" />
             </div>
           </div>
         </motion.section>
@@ -135,7 +138,7 @@ export default function AboutPage() {
           <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {timeline.map((t, i) => (
               <motion.div key={t.year} variants={cardVariants} whileHover={{ y: -6 }} className="relative rounded-3xl border border-slate-100 bg-white p-8 shadow-sm transition-all">
-                <div className={`inline-flex items-center justify-center rounded-2xl px-4 py-2 text-sm font-black ${i === 3 ? "bg-cyan-600 text-white" : "bg-blue-50 text-blue-700"}`}>{t.year}</div>
+                <div className="inline-flex items-center justify-center rounded-2xl bg-blue-50 px-4 py-2 text-sm font-black text-blue-700">{t.year}</div>
                 <h3 className="mt-5 text-xl font-bold text-slate-900">{t.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate-500">{t.desc}</p>
                 {i < 3 && <div className="absolute -right-3 top-1/2 hidden h-0.5 w-6 bg-blue-200 lg:block" />}
@@ -178,9 +181,9 @@ export default function AboutPage() {
             <h2 className="mt-4 text-4xl font-bold text-slate-900">Our Core Values</h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500">The principles that guide every product, platform, and partnership at Sigmatronics.</p>
           </div>
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 flex flex-wrap justify-center gap-6">
             {values.map((v, i) => (
-              <motion.div key={v.title} variants={cardVariants} whileHover={{ y: -5, boxShadow: "0 20px 50px rgba(0,0,0,0.08)" }} className="group rounded-3xl border border-slate-100 bg-white p-8 shadow-sm transition-all">
+              <motion.div key={v.title} variants={cardVariants} whileHover={{ y: -5, boxShadow: "0 20px 50px rgba(0,0,0,0.08)" }} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] group rounded-3xl border border-slate-100 bg-white p-8 shadow-sm transition-all">
                 <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm ${i % 2 === 0 ? "bg-blue-50 text-blue-600" : "bg-orange-50 text-orange-600"}`}>
                   <v.icon size={28} strokeWidth={2.5} />
                 </div>

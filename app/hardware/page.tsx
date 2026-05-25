@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import BackToHome from "../components/BackToHome";
 import { 
   Cpu, 
   Radio, 
@@ -148,6 +149,8 @@ export default function HardwarePage() {
         <motion.div animate={{ scale: [1.2,1,1.2], x:[0,-60,0] }} transition={{ duration: 25, repeat: Infinity, ease:"easeInOut" }} className="absolute -right-32 top-48 h-[700px] w-[700px] rounded-full bg-cyan-400/10 blur-[140px]" />
       </div>
 
+      <BackToHome />
+
       <main className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
 
         {/* HERO */}
@@ -263,7 +266,7 @@ export default function HardwarePage() {
               </p>
             </div>
             <div className="mt-12 overflow-hidden rounded-3xl shadow-2xl">
-              <Image src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80" alt="IoT Gateway Controller" width={1400} height={500} className="h-72 w-full object-cover transition-transform duration-700 hover:scale-105" />
+              <Image src="/iothardware_Product.jpeg" alt="IoT Gateway Controller" width={1400} height={500} className="h-72 w-full object-cover transition-transform duration-700 hover:scale-105" />
             </div>
             <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once:true }} className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {gatewayFeatures.map(f => (

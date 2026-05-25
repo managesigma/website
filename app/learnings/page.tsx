@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import BackToHome from "../components/BackToHome";
 import { 
   Cpu, 
   CircuitBoard, 
@@ -73,6 +74,8 @@ export default function LearningsPage() {
         <motion.div animate={{ scale: [1, 1.2, 1], x: [0, 80, 0] }} transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }} className="absolute -left-32 -top-32 h-[600px] w-[600px] rounded-full bg-orange-400/10 blur-[120px]" />
         <motion.div animate={{ scale: [1.2, 1, 1.2], y: [0, 80, 0] }} transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-32 bottom-0 h-[700px] w-[700px] rounded-full bg-blue-400/10 blur-[140px]" />
       </div>
+
+      <BackToHome />
 
       <main className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
 

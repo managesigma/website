@@ -1,3 +1,5 @@
+import BackToHome from "../components/BackToHome";
+
 export const metadata = {
   title: 'Refund Policy | Sigmatronics Innovation',
   description: 'Understand the refund policy for Sigmatronics Innovation Private Limited services, hardware, and consultancy engagements.',
@@ -5,7 +7,9 @@ export const metadata = {
 
 export default function RefundPage() {
   return (
-    <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
+    <div>
+      <BackToHome />
+      <main className="relative mx-auto max-w-6xl px-6 py-20 sm:px-8 lg:px-10">
       <section className="space-y-6 rounded-4xl border border-slate-200 bg-white p-10 shadow-lg">
         <div className="space-y-3">
           <p className="text-sm uppercase tracking-[0.24em] text-sky-600">Refund Policy</p>
@@ -62,6 +66,7 @@ export default function RefundPage() {
           </div>
         </div>
       </section>
-    </main>
+      </main>
+    </div>
   );
 }

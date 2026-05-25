@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import BackToHome from "../components/BackToHome";
 import { 
   Cpu, 
   Code, 
@@ -71,6 +72,8 @@ export default function ConsultancyPage() {
         <motion.div animate={{ scale: [1.2, 1, 1.2], y: [0, 80, 0] }} transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-32 bottom-0 h-[700px] w-[700px] rounded-full bg-orange-400/10 blur-[140px]" />
       </div>
 
+      <BackToHome />
+
       <main className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
 
         {/* HERO */}
@@ -124,9 +127,9 @@ export default function ConsultancyPage() {
             <h2 className="mt-4 text-4xl font-bold text-slate-900">Consultancy Areas</h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500">Five specialized advisory domains — from hardware architecture to digital strategy.</p>
           </div>
-          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 flex flex-wrap justify-center gap-6">
             {consultancyAreas.map(area => (
-              <motion.div key={area.title} variants={cardVariants} whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(0,0,0,0.1)" }} className={`group rounded-3xl border bg-gradient-to-br p-8 transition-all ${area.color}`}>
+              <motion.div key={area.title} variants={cardVariants} whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(0,0,0,0.1)" }} className={`w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group rounded-3xl border bg-gradient-to-br p-8 transition-all ${area.color}`}>
                 <div className={`flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm ${area.accent}`}>
                   <area.icon size={28} strokeWidth={2.5} />
                 </div>
@@ -152,7 +155,6 @@ export default function ConsultancyPage() {
           <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {engagementSteps.map((s) => (
               <motion.div key={s.step} variants={cardVariants} whileHover={{ y: -5 }} className="relative rounded-3xl border border-slate-100 bg-white p-8 shadow-sm transition-all">
-                <div className="absolute right-5 top-5 text-5xl font-black text-slate-100">{s.step}</div>
                 <div className="text-blue-600">
                   <s.icon size={40} strokeWidth={1.5} />
                 </div>

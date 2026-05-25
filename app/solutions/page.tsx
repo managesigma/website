@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import BackToHome from "../components/BackToHome";
 import { 
   ShoppingCart, 
   Droplets, 
@@ -69,7 +70,7 @@ const solutions = [
     color: "from-teal-600 to-cyan-500",
     bg: "from-teal-50 to-cyan-50",
     border: "border-teal-100",
-    image: "https://images.unsplash.com/photo-1544724107-6d5e4b1b9988?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80",
+    image: "/Cloth bag vending machine_product.jpg",
     desc: "Controlled, metered, and access-secured dispensing systems for liquid, utility, and consumable products with full usage tracking.",
     items: ["Liquid & utility dispensing systems", "Metered dispensing logic", "Secure access-based dispense flows", "Consumable dispensing control", "Usage logs & transaction reporting"],
   },
@@ -133,6 +134,8 @@ export default function SolutionsPage() {
         <motion.div animate={{ scale:[1,1.2,1], y:[0,60,0] }} transition={{ duration:20, repeat:Infinity, ease:"easeInOut" }} className="absolute -left-32 -top-32 h-[600px] w-[600px] rounded-full bg-teal-400/10 blur-[120px]" />
         <motion.div animate={{ scale:[1.2,1,1.2], x:[0,-60,0] }} transition={{ duration:28, repeat:Infinity, ease:"easeInOut" }} className="absolute -right-32 top-48 h-[700px] w-[700px] rounded-full bg-orange-400/10 blur-[140px]" />
       </div>
+
+      <BackToHome />
 
       <main className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
 
